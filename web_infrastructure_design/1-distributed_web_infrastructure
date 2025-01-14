@@ -1,0 +1,54 @@
+================================================
+     THREE-SERVER WEB INFRASTRUCTURE DESIGN
+================================================
+
+------------------------------------------------
+1. REQUEST FLOW
+
+a) Client types www.foobar.com in browser
+b) DNS resolves to HAProxy's IP address
+c) HAProxy distributes request (Round Robin):
+   - Alternates between Server 1 and Server 2
+   - Active-Active configuration (both servers handle traffic)
+d) Selected server processes request:
+   - Nginx handles HTTP REQUEST
+   - Application server processes dynamic content
+   - Database queries routed to MySQL Primary (writes) or Replica (reads)
+e) Response sent back to Client
+
+------------------------------------------------
+2. DATABASE CONFIGURATION
+
+MySQL Primary:
+  - Handles all write operations (INSERT/UPDATE/DELETE)
+  - Maintains binary log of all data changes
+  - Replicates changes to Replica node
+
+MySQL Replica:
+  - Receives data updates from Primary
+  - Handles read operations (SELECT)
+  - Provides redundancy
+  - Can be promoted if Primary fails
+
+------------------------------------------------
+3. INFRASTRUCTURE ISSUES
+
+A. Single Points of Failure (SPOF)
+   - HAProxy load balancer
+   - MySQL Primary node
+   - Individual server components
+
+B. Security Issues
+   - No firewall protection
+   - No HTTPS encryption
+   - Exposed ports and services
+   - No network segmentation
+
+C. Monitoring Gaps
+   - No server health monitoring
+   - No performance metrics
+   - No error tracking
+   - No resource utilization monitoring
+   - No automated alerting
+
+================================================

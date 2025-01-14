@@ -1,0 +1,40 @@
+============================================
+  HTTP REQUEST FLOW AND SPOF CONSIDERATIONS
+============================================
+
+1. User types **www.foobar.com** into their browser.
+
+2. The browser sends a **DNS query** to resolve the domain name into an IP address.
+   The DNS server returns the corresponding IP address to the user.
+
+3. With the IP address, the user's browser establishes a connection with the server
+   and sends an **HTTP request**.
+   The request specifies the URL of the requested resource (e.g., index.html, styles.css)
+   along with other header information.
+
+4. The server receives the HTTP request and forwards it to **Nginx**, the web server.
+
+5. Nginx analyzes the request to determine the type of resource being requested (HTML, CSS, images, etc.):
+   - **Static resource**:
+     Nginx locates the file on the system and sends it directly to the browser in an HTTP response.
+   - **Dynamic resource**:
+     Nginx forwards the request to the **application server**, which processes it and may interact with the **MySQL database**
+     to retrieve necessary data.
+     The application server generates the dynamic HTML content and sends it back to Nginx.
+     Nginx then embeds the content in an HTTP response and delivers it to the user's browser.
+
+6. The browser displays the content, rendering the webpage visible to the user.
+
+--------------------------------------------
+        SPOF (Single Point of Failure)
+--------------------------------------------
+
+- **Server Downtime**:
+  If the server goes down, the entire website becomes inaccessible.
+
+- **Maintenance Impact**:
+  Scheduled maintenance results in the complete shutdown of the website.
+
+- **Low Scalability**:
+  A single server limits the number of concurrent connections, potentially causing performance issues
+  under heavy traffic.
